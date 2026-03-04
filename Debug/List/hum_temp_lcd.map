@@ -1,0 +1,32 @@
+RAM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+EEPROM Allocation [bytes]
+Variable                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                                          Register  Size
+------------------------------------------------------------------------------------------------
+temp                                                                              R4           1
+hum                                                                               R3           1
+
+FLASH Allocation [words]
+Function                                                                          Address   Size
+------------------------------------------------------------------------------------------------
+humid_read                                                                        0x00085     99
+lcd_pulse_enable                                                                  0x000E8      9
+lcd_send_nibble                                                                   0x000F1     27
+lcd_cmd                                                                           0x0010C     16
+lcd_data                                                                          0x0011C     17
+lcd_init                                                                          0x0012D     62
+lcd_gotoxy                                                                        0x0016B     16
+lcd_puts                                                                          0x0017B     15
+lcd_clear                                                                         0x0018A      7
+main                                                                              0x00191     69
+put_buff_G100                                                                     0x001D6     64
+_print_G100                                                                       0x00216    372
+sprintf                                                                           0x0038A     60
+strlen                                                                            0x003C6     12
+strlenf                                                                           0x003D2     13

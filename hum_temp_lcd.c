@@ -1,0 +1,282 @@
+#include <mega328p.h>
+#include <delay.h>
+#include <stdio.h>
+
+// LCD Connections based on your image
+// RS  -> PORTD.4
+// RW  -> GND (connected to ground - always write mode)
+// EN  -> PORTD.5
+// D4  -> PORTD.6
+// D5  -> PORTD.7
+// D6  -> PORTB.0
+// D7  -> PORTB.1
+
+// Define LCD ports and pins
+#define LCD_RS_PORT PORTD
+#define LCD_RS_DDR  DDRD
+#define LCD_RS_PIN  4
+
+#define LCD_EN_PORT PORTD
+#define LCD_EN_DDR  DDRD
+#define LCD_EN_PIN  5
+
+#define LCD_D4_PORT PORTD
+#define LCD_D4_DDR  DDRD
+#define LCD_D4_PIN  6
+
+#define LCD_D5_PORT PORTD
+#define LCD_D5_DDR  DDRD
+#define LCD_D5_PIN  7
+
+#define LCD_D6_PORT PORTB
+#define LCD_D6_DDR  DDRB
+#define LCD_D6_PIN  0
+
+#define LCD_D7_PORT PORTB
+#define LCD_D7_DDR  DDRB
+#define LCD_D7_PIN  1
+
+unsigned char temp, hum;
+
+// Function prototypes
+void lcd_cmd(unsigned char cmd);
+void lcd_data(unsigned char data);
+void lcd_init(void);
+void lcd_gotoxy(unsigned char x, unsigned char y);
+void lcd_puts(char *str);
+void lcd_clear(void);
+void lcd_pulse_enable(void);
+void lcd_send_nibble(unsigned char nibble);
+
+// DHT11 read function
+unsigned char humid_read(unsigned char *temperature, unsigned char *humidity)
+{
+    unsigned char i, j;
+    unsigned char data[5] = {0, 0, 0, 0, 0};
+
+    // Start signal
+    DDRD |= (1 << 2);      // PD2 output (DHT11 data pin)
+    PORTD &= ~(1 << 2);    // pull low
+    delay_ms(18);
+
+    PORTD |= (1 << 2);     // pull high
+    delay_us(30);
+    DDRD &= ~(1 << 2);     // PD2 input
+
+    // Check response
+    if (PIND & (1 << 2)) 
+        return 1;
+
+    // Wait for DHT to pull low
+    while (!(PIND & (1 << 2)));
+    
+    // Wait for DHT to pull high
+    while (PIND & (1 << 2));
+
+    // Read 5 bytes of data
+    for(j = 0; j < 5; j++)
+    {
+        for(i = 0; i < 8; i++)
+        {
+            // Wait for pin to go high
+            while (!(PIND & (1 << 2)));
+            
+            // Wait 30us to sample
+            delay_us(30);
+            
+            // Check if bit is 1 or 0
+            if (PIND & (1 << 2))
+                data[j] |= (1 << (7 - i));
+            
+            // Wait for pin to go low
+            while (PIND & (1 << 2));
+        }
+    }
+
+    // Verify checksum
+    if((data[0] + data[1] + data[2] + data[3]) == data[4])
+    {
+        *humidity = data[0];
+        *temperature = data[2];
+        return 0;
+    }
+    
+    return 2;
+}
+
+// LCD Functions
+void lcd_pulse_enable(void)
+{
+    LCD_EN_PORT |= (1 << LCD_EN_PIN);
+    delay_us(2);
+    LCD_EN_PORT &= ~(1 << LCD_EN_PIN);
+    delay_us(2);
+}
+
+void lcd_send_nibble(unsigned char nibble)
+{
+    // Set D4 (PORTD.6)
+    if(nibble & 0x10)
+        LCD_D4_PORT |= (1 << LCD_D4_PIN);
+    else
+        LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
+    
+    // Set D5 (PORTD.7)
+    if(nibble & 0x20)
+        LCD_D5_PORT |= (1 << LCD_D5_PIN);
+    else
+        LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
+    
+    // Set D6 (PORTB.0)
+    if(nibble & 0x40)
+        LCD_D6_PORT |= (1 << LCD_D6_PIN);
+    else
+        LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
+    
+    // Set D7 (PORTB.1)
+    if(nibble & 0x80)
+        LCD_D7_PORT |= (1 << LCD_D7_PIN);
+    else
+        LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
+    
+    lcd_pulse_enable();
+}
+
+void lcd_cmd(unsigned char cmd)
+{
+    // RS = 0 for command
+    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);
+    
+    // Send upper nibble
+    lcd_send_nibble(cmd & 0xF0);
+    
+    // Send lower nibble
+    lcd_send_nibble((cmd << 4) & 0xF0);
+    
+    delay_ms(2);
+}
+
+void lcd_data(unsigned char data)
+{
+    // RS = 1 for data
+    LCD_RS_PORT |= (1 << LCD_RS_PIN);
+    
+    // Send upper nibble
+    lcd_send_nibble(data & 0xF0);
+    
+    // Send lower nibble
+    lcd_send_nibble((data << 4) & 0xF0);
+    
+    delay_us(50);
+}
+
+void lcd_init(void)
+{
+    // Configure all LCD pins as outputs
+    // RS pin
+    LCD_RS_DDR |= (1 << LCD_RS_PIN);
+    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);  // Start with RS low
+    
+    // EN pin
+    LCD_EN_DDR |= (1 << LCD_EN_PIN);
+    LCD_EN_PORT &= ~(1 << LCD_EN_PIN);  // Start with EN low
+    
+    // D4-D7 pins
+    LCD_D4_DDR |= (1 << LCD_D4_PIN);
+    LCD_D5_DDR |= (1 << LCD_D5_PIN);
+    LCD_D6_DDR |= (1 << LCD_D6_PIN);
+    LCD_D7_DDR |= (1 << LCD_D7_PIN);
+    
+    // Initialize all data pins to low
+    LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
+    LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
+    LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
+    LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
+    
+    delay_ms(20);  // Wait for LCD to power up
+    
+    // Initialization sequence
+    lcd_send_nibble(0x30);  // Function set 8-bit
+    delay_ms(5);
+    lcd_send_nibble(0x30);  // Function set 8-bit
+    delay_us(150);
+    lcd_send_nibble(0x30);  // Function set 8-bit
+    delay_ms(5);
+    
+    // Set to 4-bit mode
+    lcd_send_nibble(0x20);  // Function set 4-bit
+    delay_ms(5);
+    
+    // Now in 4-bit mode, we can use lcd_cmd
+    // Function set: 4-bit, 2 lines, 5x7 dots
+    lcd_cmd(0x28);
+    delay_ms(1);
+    
+    // Display on, cursor off
+    lcd_cmd(0x0C);
+    delay_ms(1);
+    
+    // Clear display
+    lcd_cmd(0x01);
+    delay_ms(2);
+    
+    // Entry mode set: increment, no shift
+    lcd_cmd(0x06);
+    delay_ms(1);
+}
+
+void lcd_gotoxy(unsigned char x, unsigned char y)
+{
+    unsigned char address;
+    
+    if(y == 0)
+        address = 0x80 + x;
+    else
+        address = 0xC0 + x;
+    
+    lcd_cmd(address);
+}
+
+void lcd_puts(char *str)
+{
+    while(*str)
+    {
+        lcd_data(*str++);
+    }
+}
+
+void lcd_clear(void)
+{
+    lcd_cmd(0x01);
+    delay_ms(2);
+}
+
+void main(void)
+{
+    char buffer[17];
+
+    // Initialize LCD
+    lcd_init();
+    lcd_clear();
+
+    while(1)
+    {
+        if(humid_read(&temp, &hum) == 0)
+        {
+            lcd_gotoxy(0, 0);
+            sprintf(buffer, "Temp:%d C   ", temp);
+            lcd_puts(buffer);
+
+            lcd_gotoxy(0, 1);
+            sprintf(buffer, "Hum:%d %%   ", hum);
+            lcd_puts(buffer);
+        }
+        else
+        {
+            lcd_gotoxy(0, 0);
+            lcd_puts("DHT11 Error   ");
+        }
+
+        delay_ms(2000);
+    }
+}
