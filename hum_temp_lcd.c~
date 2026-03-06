@@ -36,6 +36,12 @@
 #define LCD_D7_DDR  DDRB
 #define LCD_D7_PIN  1
 
+// DHT11 Pin definition
+#define DHT11_PIN   PIND2
+#define DHT11_DDR   DDRD
+#define DHT11_PORT  PORTD
+#define DHT11_INPUT PIND
+
 unsigned char temp, hum;
 
 // Function prototypes
@@ -48,48 +54,78 @@ void lcd_clear(void);
 void lcd_pulse_enable(void);
 void lcd_send_nibble(unsigned char nibble);
 
-// DHT11 read function
-unsigned char humid_read(unsigned char *temperature, unsigned char *humidity)
+// DHT11 read function - FIXED VERSION
+unsigned char dht11_read(unsigned char *temperature, unsigned char *humidity)
 {
     unsigned char i, j;
     unsigned char data[5] = {0, 0, 0, 0, 0};
+    unsigned int timeout = 0;
 
-    // Start signal
-    DDRD |= (1 << PD2);      // PD2 output (DHT11 data pin)
-    PORTD &= ~(1 << PD2);    // pull low
-    delay_ms(18);
-
-    PORTD |= (1 << PD2);     // pull high
-    delay_us(30);
-    DDRD &= ~(1 << PD2);     // PD2 input
-
-    // Check response
-    if (PIND & (1 << PD2)) 
-        return 1;
-
-    // Wait for DHT to pull low
-    while (!(PIND & (1 << PD2)));
+    // Send start signal to DHT11
+    DHT11_DDR |= (1 << DHT11_PIN);      // Set as output
+    DHT11_PORT &= ~(1 << DHT11_PIN);    // Pull low
+    delay_ms(18);                       // Wait at least 18ms
     
-    // Wait for DHT to pull high
-    while (PIND & (1 << PD2));
+    DHT11_PORT |= (1 << DHT11_PIN);     // Pull high
+    delay_us(30);                        // Wait 20-40us
+    DHT11_DDR &= ~(1 << DHT11_PIN);     // Set as input
+    delay_us(10);                        
 
-    // Read 5 bytes of data
+    // Check for DHT11 response
+    // DHT11 should pull low for 80us
+    timeout = 0;
+    while ((DHT11_INPUT & (1 << DHT11_PIN)))  // Wait for LOW
+    {
+        delay_us(1);
+        timeout++;
+        if(timeout > 100) return 1;  // Timeout error
+    }
+    
+    timeout = 0;
+    while (!(DHT11_INPUT & (1 << DHT11_PIN))) // Wait for HIGH
+    {
+        delay_us(1);
+        timeout++;
+        if(timeout > 100) return 2;  // Timeout error
+    }
+    
+    timeout = 0;
+    while ((DHT11_INPUT & (1 << DHT11_PIN)))  // Wait for LOW (data start)
+    {
+        delay_us(1);
+        timeout++;
+        if(timeout > 100) return 3;  // Timeout error
+    }
+
+    // Read 40 bits (5 bytes) of data
     for(j = 0; j < 5; j++)
     {
         for(i = 0; i < 8; i++)
         {
-            // Wait for pin to go high
-            while (!(PIND & (1 << PD2)));
+            // Wait for pin to go high (start of bit transmission)
+            timeout = 0;
+            while (!(DHT11_INPUT & (1 << DHT11_PIN)))
+            {
+                delay_us(1);
+                timeout++;
+                if(timeout > 100) return 4;
+            }
             
-            // Wait 30us to sample
-            delay_us(30);
+            // Wait 40us to sample (middle of bit)
+            delay_us(40);
             
-            // Check if bit is 1 or 0
-            if (PIND & (1 << PD2))
-                data[j] |= (1 << (7 - i));
+            // If still high after 40us, it's a '1', else it's a '0'
+            if (DHT11_INPUT & (1 << DHT11_PIN))
+                data[j] |= (1 << (7 - i));  // Set bit as '1'
             
-            // Wait for pin to go low
-            while (PIND & (1 << PD2));
+            // Wait for pin to go low before next bit
+            timeout = 0;
+            while (DHT11_INPUT & (1 << DHT11_PIN))
+            {
+                delay_us(1);
+                timeout++;
+                if(timeout > 100) return 5;
+            }
         }
     }
 
@@ -98,13 +134,13 @@ unsigned char humid_read(unsigned char *temperature, unsigned char *humidity)
     {
         *humidity = data[0];
         *temperature = data[2];
-        return 0;
+        return 0;  // Success
     }
     
-    return 2;
+    return 6;  // Checksum error
 }
 
-// LCD Functions
+// LCD Functions (these are correct)
 void lcd_pulse_enable(void)
 {
     LCD_EN_PORT |= (1 << LCD_EN_PIN);
@@ -144,50 +180,33 @@ void lcd_send_nibble(unsigned char nibble)
 
 void lcd_cmd(unsigned char cmd)
 {
-    // RS = 0 for command
-    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);
-    
-    // Send upper nibble
-    lcd_send_nibble(cmd & 0xF0);
-    
-    // Send lower nibble
-    lcd_send_nibble((cmd << 4) & 0xF0);
-    
+    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);  // RS = 0 for command
+    lcd_send_nibble(cmd & 0xF0);         // Send upper nibble
+    lcd_send_nibble((cmd << 4) & 0xF0);  // Send lower nibble
     delay_ms(2);
 }
 
 void lcd_data(unsigned char data)
 {
-    // RS = 1 for data
-    LCD_RS_PORT |= (1 << LCD_RS_PIN);
-    
-    // Send upper nibble
-    lcd_send_nibble(data & 0xF0);
-    
-    // Send lower nibble
-    lcd_send_nibble((data << 4) & 0xF0);
-    
+    LCD_RS_PORT |= (1 << LCD_RS_PIN);    // RS = 1 for data
+    lcd_send_nibble(data & 0xF0);         // Send upper nibble
+    lcd_send_nibble((data << 4) & 0xF0);  // Send lower nibble
     delay_us(50);
 }
 
 void lcd_init(void)
 {
     // Configure all LCD pins as outputs
-    // RS pin
     LCD_RS_DDR |= (1 << LCD_RS_PIN);
-    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);  // Start with RS low
-    
-    // EN pin
     LCD_EN_DDR |= (1 << LCD_EN_PIN);
-    LCD_EN_PORT &= ~(1 << LCD_EN_PIN);  // Start with EN low
-    
-    // D4-D7 pins
     LCD_D4_DDR |= (1 << LCD_D4_PIN);
     LCD_D5_DDR |= (1 << LCD_D5_PIN);
     LCD_D6_DDR |= (1 << LCD_D6_PIN);
     LCD_D7_DDR |= (1 << LCD_D7_PIN);
     
-    // Initialize all data pins to low
+    // Initialize all pins to low
+    LCD_RS_PORT &= ~(1 << LCD_RS_PIN);
+    LCD_EN_PORT &= ~(1 << LCD_EN_PIN);
     LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
     LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
     LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
@@ -195,33 +214,24 @@ void lcd_init(void)
     
     delay_ms(20);  // Wait for LCD to power up
     
-    // Initialization sequence
-    lcd_send_nibble(0x30);  // Function set 8-bit
+    // Initialization sequence for 4-bit mode
+    lcd_send_nibble(0x30);
     delay_ms(5);
-    lcd_send_nibble(0x30);  // Function set 8-bit
+    lcd_send_nibble(0x30);
     delay_us(150);
-    lcd_send_nibble(0x30);  // Function set 8-bit
+    lcd_send_nibble(0x30);
+    delay_ms(5);
+    lcd_send_nibble(0x20);  // Set to 4-bit mode
     delay_ms(5);
     
-    // Set to 4-bit mode
-    lcd_send_nibble(0x20);  // Function set 4-bit
-    delay_ms(5);
-    
-    // Now in 4-bit mode, we can use lcd_cmd
-    // Function set: 4-bit, 2 lines, 5x7 dots
-    lcd_cmd(0x28);
+    // Configure LCD
+    lcd_cmd(0x28);  // 4-bit, 2 lines, 5x7 dots
     delay_ms(1);
-    
-    // Display on, cursor off
-    lcd_cmd(0x0C);
+    lcd_cmd(0x0C);  // Display on, cursor off
     delay_ms(1);
-    
-    // Clear display
-    lcd_cmd(0x01);
+    lcd_cmd(0x01);  // Clear display
     delay_ms(2);
-    
-    // Entry mode set: increment, no shift
-    lcd_cmd(0x06);
+    lcd_cmd(0x06);  // Entry mode: increment, no shift
     delay_ms(1);
 }
 
@@ -254,14 +264,24 @@ void lcd_clear(void)
 void main(void)
 {
     char buffer[17];
+    unsigned char result;
 
     // Initialize LCD
     lcd_init();
     lcd_clear();
+    
+    // Display startup message
+    lcd_gotoxy(0, 0);
+    lcd_puts("DHT11 Reader");
+    lcd_gotoxy(0, 1);
+    lcd_puts("Initializing...");
+    delay_ms(20000);
 
     while(1)
     {
-        if(humid_read(&temp, &hum) == 0)
+        result = dht11_read(&temp, &hum);
+        
+        if(result == 0)
         {
             lcd_gotoxy(0, 0);
             sprintf(buffer, "Temp:%d C   ", temp);
@@ -274,7 +294,22 @@ void main(void)
         else
         {
             lcd_gotoxy(0, 0);
-            lcd_puts("DHT11 Error   ");
+            lcd_puts("DHT11 Error:   ");
+            
+            lcd_gotoxy(0, 1);
+            switch(result)
+            {   lcd_clear();
+                case 1: lcd_puts("No Response   "); break;
+                case 2: lcd_puts("Init timeout  "); break;
+                case 3: lcd_puts("Data timeout  "); break;
+                case 4: lcd_puts("Read timeout  "); break;
+                case 5: lcd_puts("Bit timeout   "); break;
+                case 6: lcd_puts("Checksum error"); break;
+                default: lcd_puts("Unknown error "); break;
+                
+                
+                
+            }
         }
 
         delay_ms(2000);

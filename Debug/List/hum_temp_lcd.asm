@@ -6,7 +6,7 @@
 ;Build configuration    : Debug
 ;Chip type              : ATmega328P
 ;Program type           : Application
-;Clock frequency        : 16.000000 MHz
+;Clock frequency        : 1.000000 MHz
 ;Memory model           : Small
 ;Optimize for           : Speed
 ;(s)printf features     : int, width
@@ -1134,17 +1134,69 @@ _tbl16_G100:
 	.DB  0x0,0x10,0x0,0x1,0x10,0x0,0x1,0x0
 
 _0x0:
-	.DB  0x54,0x65,0x6D,0x70,0x3A,0x25,0x64,0x20
-	.DB  0x43,0x20,0x20,0x20,0x0,0x48,0x75,0x6D
-	.DB  0x3A,0x25,0x64,0x20,0x25,0x25,0x20,0x20
-	.DB  0x20,0x0,0x44,0x48,0x54,0x31,0x31,0x20
-	.DB  0x45,0x72,0x72,0x6F,0x72,0x20,0x20,0x20
-	.DB  0x0
+	.DB  0x44,0x48,0x54,0x31,0x31,0x20,0x52,0x65
+	.DB  0x61,0x64,0x65,0x72,0x0,0x49,0x6E,0x69
+	.DB  0x74,0x69,0x61,0x6C,0x69,0x7A,0x69,0x6E
+	.DB  0x67,0x2E,0x2E,0x2E,0x0,0x54,0x65,0x6D
+	.DB  0x70,0x3A,0x25,0x64,0x20,0x43,0x20,0x20
+	.DB  0x20,0x0,0x48,0x75,0x6D,0x3A,0x25,0x64
+	.DB  0x20,0x25,0x25,0x20,0x20,0x20,0x0,0x44
+	.DB  0x48,0x54,0x31,0x31,0x20,0x45,0x72,0x72
+	.DB  0x6F,0x72,0x3A,0x20,0x20,0x20,0x0,0x4E
+	.DB  0x6F,0x20,0x52,0x65,0x73,0x70,0x6F,0x6E
+	.DB  0x73,0x65,0x20,0x20,0x20,0x0,0x49,0x6E
+	.DB  0x69,0x74,0x20,0x74,0x69,0x6D,0x65,0x6F
+	.DB  0x75,0x74,0x20,0x20,0x0,0x44,0x61,0x74
+	.DB  0x61,0x20,0x74,0x69,0x6D,0x65,0x6F,0x75
+	.DB  0x74,0x20,0x20,0x0,0x52,0x65,0x61,0x64
+	.DB  0x20,0x74,0x69,0x6D,0x65,0x6F,0x75,0x74
+	.DB  0x20,0x20,0x0,0x42,0x69,0x74,0x20,0x74
+	.DB  0x69,0x6D,0x65,0x6F,0x75,0x74,0x20,0x20
+	.DB  0x20,0x0,0x43,0x68,0x65,0x63,0x6B,0x73
+	.DB  0x75,0x6D,0x20,0x65,0x72,0x72,0x6F,0x72
+	.DB  0x0,0x55,0x6E,0x6B,0x6E,0x6F,0x77,0x6E
+	.DB  0x20,0x65,0x72,0x72,0x6F,0x72,0x20,0x0
 
 __GLOBAL_INI_TBL:
+	.DW  0x0D
+	.DW  _0x2C
+	.DW  _0x0*2
+
+	.DW  0x10
+	.DW  _0x2C+13
+	.DW  _0x0*2+13
+
+	.DW  0x10
+	.DW  _0x2C+29
+	.DW  _0x0*2+55
+
 	.DW  0x0F
-	.DW  _0x2A
-	.DW  _0x0*2+26
+	.DW  _0x2C+45
+	.DW  _0x0*2+71
+
+	.DW  0x0F
+	.DW  _0x2C+60
+	.DW  _0x0*2+86
+
+	.DW  0x0F
+	.DW  _0x2C+75
+	.DW  _0x0*2+101
+
+	.DW  0x0F
+	.DW  _0x2C+90
+	.DW  _0x0*2+116
+
+	.DW  0x0F
+	.DW  _0x2C+105
+	.DW  _0x0*2+131
+
+	.DW  0x0F
+	.DW  _0x2C+120
+	.DW  _0x0*2+146
+
+	.DW  0x0F
+	.DW  _0x2C+135
+	.DW  _0x0*2+161
 
 _0xFFFFFFFF:
 	.DW  0
@@ -1276,6 +1328,12 @@ __GLOBAL_INI_END:
 ;#define LCD_D7_DDR  DDRB
 ;#define LCD_D7_PIN  1
 ;
+;// DHT11 Pin definition
+;#define DHT11_PIN   PIND2
+;#define DHT11_DDR   DDRD
+;#define DHT11_PORT  PORTD
+;#define DHT11_INPUT PIND
+;
 ;unsigned char temp, hum;
 ;
 ;// Function prototypes
@@ -1288,18 +1346,19 @@ __GLOBAL_INI_END:
 ;void lcd_pulse_enable(void);
 ;void lcd_send_nibble(unsigned char nibble);
 ;
-;// DHT11 read function
-;unsigned char humid_read(unsigned char *temperature, unsigned char *humidity)
-; 0000 0035 {
+;// DHT11 read function - FIXED VERSION
+;unsigned char dht11_read(unsigned char *temperature, unsigned char *humidity)
+; 0000 003B {
 
 	.CSEG
-_humid_read:
-; .FSTART _humid_read
-; 0000 0036     unsigned char i, j;
-; 0000 0037     unsigned char data[5] = {0, 0, 0, 0, 0};
-; 0000 0038 
-; 0000 0039     // Start signal
-; 0000 003A     DDRD |= (1 << 2);      // PD2 output (DHT11 data pin)
+_dht11_read:
+; .FSTART _dht11_read
+; 0000 003C     unsigned char i, j;
+; 0000 003D     unsigned char data[5] = {0, 0, 0, 0, 0};
+; 0000 003E     unsigned int timeout = 0;
+; 0000 003F 
+; 0000 0040     // Send start signal to DHT11
+; 0000 0041     DHT11_DDR |= (1 << DHT11_PIN);      // Set as output
 	ST   -Y,R27
 	ST   -Y,R26
 	SBIW R28,5
@@ -1309,81 +1368,140 @@ _humid_read:
 	STD  Y+2,R30
 	STD  Y+3,R30
 	STD  Y+4,R30
-	ST   -Y,R17
-	ST   -Y,R16
-;	*temperature -> Y+9
-;	*humidity -> Y+7
+	CALL __SAVELOCR4
+;	*temperature -> Y+11
+;	*humidity -> Y+9
 ;	i -> R17
 ;	j -> R16
-;	data -> Y+2
+;	data -> Y+4
+;	timeout -> R18,R19
+	__GETWRN 18,19,0
 	SBI  0xA,2
-; 0000 003B     PORTD &= ~(1 << 2);    // pull low
+; 0000 0042     DHT11_PORT &= ~(1 << DHT11_PIN);    // Pull low
 	CBI  0xB,2
-; 0000 003C     delay_ms(18);
+; 0000 0043     delay_ms(18);                       // Wait at least 18ms
 	LDI  R26,LOW(18)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 003D 
-; 0000 003E     PORTD |= (1 << 2);     // pull high
+; 0000 0044 
+; 0000 0045     DHT11_PORT |= (1 << DHT11_PIN);     // Pull high
 	SBI  0xB,2
-; 0000 003F     delay_us(30);
-	__DELAY_USB 160
-; 0000 0040     DDRD &= ~(1 << 2);     // PD2 input
+; 0000 0046     delay_us(30);                        // Wait 20-40us
+	__DELAY_USB 10
+; 0000 0047     DHT11_DDR &= ~(1 << DHT11_PIN);     // Set as input
 	CBI  0xA,2
-; 0000 0041 
-; 0000 0042     // Check response
-; 0000 0043     if (PIND & (1 << 2))
+; 0000 0048     delay_us(10);
+	__DELAY_USB 3
+; 0000 0049 
+; 0000 004A     // Check for DHT11 response
+; 0000 004B     // DHT11 should pull low for 80us
+; 0000 004C     timeout = 0;
+	__GETWRN 18,19,0
+; 0000 004D     while ((DHT11_INPUT & (1 << DHT11_PIN)))  // Wait for LOW
+_0x3:
 	SBIS 0x9,2
-	RJMP _0x3
-; 0000 0044         return 1;
+	RJMP _0x5
+; 0000 004E     {
+; 0000 004F         delay_us(1);
+; 0000 0050         timeout++;
+	__ADDWRN 18,19,1
+; 0000 0051         if(timeout > 100) return 1;  // Timeout error
+	__CPWRN 18,19,101
+	BRLO _0x6
 	LDI  R30,LOW(1)
 	RJMP _0x2060004
-; 0000 0045 
-; 0000 0046     // Wait for DHT to pull low
-; 0000 0047     while (!(PIND & (1 << 2)));
-_0x3:
-_0x4:
-	SBIS 0x9,2
-	RJMP _0x4
-; 0000 0048 
-; 0000 0049     // Wait for DHT to pull high
-; 0000 004A     while (PIND & (1 << 2));
+; 0000 0052     }
+_0x6:
+	RJMP _0x3
+_0x5:
+; 0000 0053 
+; 0000 0054     timeout = 0;
+	__GETWRN 18,19,0
+; 0000 0055     while (!(DHT11_INPUT & (1 << DHT11_PIN))) // Wait for HIGH
 _0x7:
 	SBIC 0x9,2
+	RJMP _0x9
+; 0000 0056     {
+; 0000 0057         delay_us(1);
+; 0000 0058         timeout++;
+	__ADDWRN 18,19,1
+; 0000 0059         if(timeout > 100) return 2;  // Timeout error
+	__CPWRN 18,19,101
+	BRLO _0xA
+	LDI  R30,LOW(2)
+	RJMP _0x2060004
+; 0000 005A     }
+_0xA:
 	RJMP _0x7
-; 0000 004B 
-; 0000 004C     // Read 5 bytes of data
-; 0000 004D     for(j = 0; j < 5; j++)
-	LDI  R16,LOW(0)
+_0x9:
+; 0000 005B 
+; 0000 005C     timeout = 0;
+	__GETWRN 18,19,0
+; 0000 005D     while ((DHT11_INPUT & (1 << DHT11_PIN)))  // Wait for LOW (data start)
 _0xB:
-	CPI  R16,5
-	BRSH _0xC
-; 0000 004E     {
-; 0000 004F         for(i = 0; i < 8; i++)
-	LDI  R17,LOW(0)
+	SBIS 0x9,2
+	RJMP _0xD
+; 0000 005E     {
+; 0000 005F         delay_us(1);
+; 0000 0060         timeout++;
+	__ADDWRN 18,19,1
+; 0000 0061         if(timeout > 100) return 3;  // Timeout error
+	__CPWRN 18,19,101
+	BRLO _0xE
+	LDI  R30,LOW(3)
+	RJMP _0x2060004
+; 0000 0062     }
 _0xE:
-	CPI  R17,8
-	BRSH _0xF
-; 0000 0050         {
-; 0000 0051             // Wait for pin to go high
-; 0000 0052             while (!(PIND & (1 << 2)));
+	RJMP _0xB
+_0xD:
+; 0000 0063 
+; 0000 0064     // Read 40 bits (5 bytes) of data
+; 0000 0065     for(j = 0; j < 5; j++)
+	LDI  R16,LOW(0)
 _0x10:
+	CPI  R16,5
+	BRSH _0x11
+; 0000 0066     {
+; 0000 0067         for(i = 0; i < 8; i++)
+	LDI  R17,LOW(0)
+_0x13:
+	CPI  R17,8
+	BRSH _0x14
+; 0000 0068         {
+; 0000 0069             // Wait for pin to go high (start of bit transmission)
+; 0000 006A             timeout = 0;
+	__GETWRN 18,19,0
+; 0000 006B             while (!(DHT11_INPUT & (1 << DHT11_PIN)))
+_0x15:
+	SBIC 0x9,2
+	RJMP _0x17
+; 0000 006C             {
+; 0000 006D                 delay_us(1);
+; 0000 006E                 timeout++;
+	__ADDWRN 18,19,1
+; 0000 006F                 if(timeout > 100) return 4;
+	__CPWRN 18,19,101
+	BRLO _0x18
+	LDI  R30,LOW(4)
+	RJMP _0x2060004
+; 0000 0070             }
+_0x18:
+	RJMP _0x15
+_0x17:
+; 0000 0071 
+; 0000 0072             // Wait 40us to sample (middle of bit)
+; 0000 0073             delay_us(40);
+	__DELAY_USB 13
+; 0000 0074 
+; 0000 0075             // If still high after 40us, it's a '1', else it's a '0'
+; 0000 0076             if (DHT11_INPUT & (1 << DHT11_PIN))
 	SBIS 0x9,2
-	RJMP _0x10
-; 0000 0053 
-; 0000 0054             // Wait 30us to sample
-; 0000 0055             delay_us(30);
-	__DELAY_USB 160
-; 0000 0056 
-; 0000 0057             // Check if bit is 1 or 0
-; 0000 0058             if (PIND & (1 << 2))
-	SBIS 0x9,2
-	RJMP _0x13
-; 0000 0059                 data[j] |= (1 << (7 - i));
+	RJMP _0x19
+; 0000 0077                 data[j] |= (1 << (7 - i));  // Set bit as '1'
 	MOV  R30,R16
 	LDI  R31,0
 	MOVW R26,R28
-	ADIW R26,2
+	ADIW R26,4
 	ADD  R30,R26
 	ADC  R31,R27
 	MOVW R22,R30
@@ -1395,338 +1513,326 @@ _0x10:
 	OR   R30,R1
 	MOVW R26,R22
 	ST   X,R30
-; 0000 005A 
-; 0000 005B             // Wait for pin to go low
-; 0000 005C             while (PIND & (1 << 2));
-_0x13:
-_0x14:
-	SBIC 0x9,2
-	RJMP _0x14
-; 0000 005D         }
+; 0000 0078 
+; 0000 0079             // Wait for pin to go low before next bit
+; 0000 007A             timeout = 0;
+_0x19:
+	__GETWRN 18,19,0
+; 0000 007B             while (DHT11_INPUT & (1 << DHT11_PIN))
+_0x1A:
+	SBIS 0x9,2
+	RJMP _0x1C
+; 0000 007C             {
+; 0000 007D                 delay_us(1);
+; 0000 007E                 timeout++;
+	__ADDWRN 18,19,1
+; 0000 007F                 if(timeout > 100) return 5;
+	__CPWRN 18,19,101
+	BRLO _0x1D
+	LDI  R30,LOW(5)
+	RJMP _0x2060004
+; 0000 0080             }
+_0x1D:
+	RJMP _0x1A
+_0x1C:
+; 0000 0081         }
 	SUBI R17,-1
-	RJMP _0xE
-_0xF:
-; 0000 005E     }
+	RJMP _0x13
+_0x14:
+; 0000 0082     }
 	SUBI R16,-1
-	RJMP _0xB
-_0xC:
-; 0000 005F 
-; 0000 0060     // Verify checksum
-; 0000 0061     if((data[0] + data[1] + data[2] + data[3]) == data[4])
-	LDD  R26,Y+2
+	RJMP _0x10
+_0x11:
+; 0000 0083 
+; 0000 0084     // Verify checksum
+; 0000 0085     if((data[0] + data[1] + data[2] + data[3]) == data[4])
+	LDD  R26,Y+4
 	CLR  R27
-	LDD  R30,Y+3
-	LDI  R31,0
-	ADD  R26,R30
-	ADC  R27,R31
-	LDD  R30,Y+4
-	LDI  R31,0
-	ADD  R26,R30
-	ADC  R27,R31
 	LDD  R30,Y+5
 	LDI  R31,0
 	ADD  R26,R30
 	ADC  R27,R31
 	LDD  R30,Y+6
 	LDI  R31,0
+	ADD  R26,R30
+	ADC  R27,R31
+	LDD  R30,Y+7
+	LDI  R31,0
+	ADD  R26,R30
+	ADC  R27,R31
+	LDD  R30,Y+8
+	LDI  R31,0
 	CP   R30,R26
 	CPC  R31,R27
-	BRNE _0x17
-; 0000 0062     {
-; 0000 0063         *humidity = data[0];
-	LDD  R30,Y+2
-	LDD  R26,Y+7
-	LDD  R27,Y+7+1
-	ST   X,R30
-; 0000 0064         *temperature = data[2];
+	BRNE _0x1E
+; 0000 0086     {
+; 0000 0087         *humidity = data[0];
 	LDD  R30,Y+4
 	LDD  R26,Y+9
 	LDD  R27,Y+9+1
 	ST   X,R30
-; 0000 0065         return 0;
+; 0000 0088         *temperature = data[2];
+	LDD  R30,Y+6
+	LDD  R26,Y+11
+	LDD  R27,Y+11+1
+	ST   X,R30
+; 0000 0089         return 0;  // Success
 	LDI  R30,LOW(0)
 	RJMP _0x2060004
-; 0000 0066     }
-; 0000 0067 
-; 0000 0068     return 2;
-_0x17:
-	LDI  R30,LOW(2)
+; 0000 008A     }
+; 0000 008B 
+; 0000 008C     return 6;  // Checksum error
+_0x1E:
+	LDI  R30,LOW(6)
 _0x2060004:
-	LDD  R17,Y+1
-	LDD  R16,Y+0
-	ADIW R28,11
+	CALL __LOADLOCR4
+	ADIW R28,13
 	RET
-; 0000 0069 }
+; 0000 008D }
 ; .FEND
 ;
-;// LCD Functions
+;// LCD Functions (these are correct)
 ;void lcd_pulse_enable(void)
-; 0000 006D {
+; 0000 0091 {
 _lcd_pulse_enable:
 ; .FSTART _lcd_pulse_enable
-; 0000 006E     LCD_EN_PORT |= (1 << LCD_EN_PIN);
+; 0000 0092     LCD_EN_PORT |= (1 << LCD_EN_PIN);
 	SBI  0xB,5
-; 0000 006F     delay_us(2);
-	__DELAY_USB 11
-; 0000 0070     LCD_EN_PORT &= ~(1 << LCD_EN_PIN);
+; 0000 0093     delay_us(2);
+	__DELAY_USB 1
+; 0000 0094     LCD_EN_PORT &= ~(1 << LCD_EN_PIN);
 	CBI  0xB,5
-; 0000 0071     delay_us(2);
-	__DELAY_USB 11
-; 0000 0072 }
+; 0000 0095     delay_us(2);
+	__DELAY_USB 1
+; 0000 0096 }
 	RET
 ; .FEND
 ;
 ;void lcd_send_nibble(unsigned char nibble)
-; 0000 0075 {
+; 0000 0099 {
 _lcd_send_nibble:
 ; .FSTART _lcd_send_nibble
-; 0000 0076     // Set D4 (PORTD.6)
-; 0000 0077     if(nibble & 0x10)
+; 0000 009A     // Set D4 (PORTD.6)
+; 0000 009B     if(nibble & 0x10)
 	ST   -Y,R26
 ;	nibble -> Y+0
 	LD   R30,Y
 	ANDI R30,LOW(0x10)
-	BREQ _0x18
-; 0000 0078         LCD_D4_PORT |= (1 << LCD_D4_PIN);
+	BREQ _0x1F
+; 0000 009C         LCD_D4_PORT |= (1 << LCD_D4_PIN);
 	SBI  0xB,6
-; 0000 0079     else
-	RJMP _0x19
-_0x18:
-; 0000 007A         LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
+; 0000 009D     else
+	RJMP _0x20
+_0x1F:
+; 0000 009E         LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
 	CBI  0xB,6
-; 0000 007B 
-; 0000 007C     // Set D5 (PORTD.7)
-; 0000 007D     if(nibble & 0x20)
-_0x19:
+; 0000 009F 
+; 0000 00A0     // Set D5 (PORTD.7)
+; 0000 00A1     if(nibble & 0x20)
+_0x20:
 	LD   R30,Y
 	ANDI R30,LOW(0x20)
-	BREQ _0x1A
-; 0000 007E         LCD_D5_PORT |= (1 << LCD_D5_PIN);
+	BREQ _0x21
+; 0000 00A2         LCD_D5_PORT |= (1 << LCD_D5_PIN);
 	SBI  0xB,7
-; 0000 007F     else
-	RJMP _0x1B
-_0x1A:
-; 0000 0080         LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
+; 0000 00A3     else
+	RJMP _0x22
+_0x21:
+; 0000 00A4         LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
 	CBI  0xB,7
-; 0000 0081 
-; 0000 0082     // Set D6 (PORTB.0)
-; 0000 0083     if(nibble & 0x40)
-_0x1B:
+; 0000 00A5 
+; 0000 00A6     // Set D6 (PORTB.0)
+; 0000 00A7     if(nibble & 0x40)
+_0x22:
 	LD   R30,Y
 	ANDI R30,LOW(0x40)
-	BREQ _0x1C
-; 0000 0084         LCD_D6_PORT |= (1 << LCD_D6_PIN);
+	BREQ _0x23
+; 0000 00A8         LCD_D6_PORT |= (1 << LCD_D6_PIN);
 	SBI  0x5,0
-; 0000 0085     else
-	RJMP _0x1D
-_0x1C:
-; 0000 0086         LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
+; 0000 00A9     else
+	RJMP _0x24
+_0x23:
+; 0000 00AA         LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
 	CBI  0x5,0
-; 0000 0087 
-; 0000 0088     // Set D7 (PORTB.1)
-; 0000 0089     if(nibble & 0x80)
-_0x1D:
+; 0000 00AB 
+; 0000 00AC     // Set D7 (PORTB.1)
+; 0000 00AD     if(nibble & 0x80)
+_0x24:
 	LD   R30,Y
 	ANDI R30,LOW(0x80)
-	BREQ _0x1E
-; 0000 008A         LCD_D7_PORT |= (1 << LCD_D7_PIN);
+	BREQ _0x25
+; 0000 00AE         LCD_D7_PORT |= (1 << LCD_D7_PIN);
 	SBI  0x5,1
-; 0000 008B     else
-	RJMP _0x1F
-_0x1E:
-; 0000 008C         LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
+; 0000 00AF     else
+	RJMP _0x26
+_0x25:
+; 0000 00B0         LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
 	CBI  0x5,1
-; 0000 008D 
-; 0000 008E     lcd_pulse_enable();
-_0x1F:
+; 0000 00B1 
+; 0000 00B2     lcd_pulse_enable();
+_0x26:
 	RCALL _lcd_pulse_enable
-; 0000 008F }
+; 0000 00B3 }
 	RJMP _0x2060003
 ; .FEND
 ;
 ;void lcd_cmd(unsigned char cmd)
-; 0000 0092 {
+; 0000 00B6 {
 _lcd_cmd:
 ; .FSTART _lcd_cmd
-; 0000 0093     // RS = 0 for command
-; 0000 0094     LCD_RS_PORT &= ~(1 << LCD_RS_PIN);
+; 0000 00B7     LCD_RS_PORT &= ~(1 << LCD_RS_PIN);  // RS = 0 for command
 	ST   -Y,R26
 ;	cmd -> Y+0
 	CBI  0xB,4
-; 0000 0095 
-; 0000 0096     // Send upper nibble
-; 0000 0097     lcd_send_nibble(cmd & 0xF0);
+; 0000 00B8     lcd_send_nibble(cmd & 0xF0);         // Send upper nibble
 	LD   R30,Y
 	ANDI R30,LOW(0xF0)
 	MOV  R26,R30
 	RCALL _lcd_send_nibble
-; 0000 0098 
-; 0000 0099     // Send lower nibble
-; 0000 009A     lcd_send_nibble((cmd << 4) & 0xF0);
+; 0000 00B9     lcd_send_nibble((cmd << 4) & 0xF0);  // Send lower nibble
 	LD   R30,Y
 	SWAP R30
 	ANDI R30,LOW(0xF0)
 	MOV  R26,R30
 	RCALL _lcd_send_nibble
-; 0000 009B 
-; 0000 009C     delay_ms(2);
+; 0000 00BA     delay_ms(2);
 	LDI  R26,LOW(2)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 009D }
+; 0000 00BB }
 	RJMP _0x2060003
 ; .FEND
 ;
 ;void lcd_data(unsigned char data)
-; 0000 00A0 {
+; 0000 00BE {
 _lcd_data:
 ; .FSTART _lcd_data
-; 0000 00A1     // RS = 1 for data
-; 0000 00A2     LCD_RS_PORT |= (1 << LCD_RS_PIN);
+; 0000 00BF     LCD_RS_PORT |= (1 << LCD_RS_PIN);    // RS = 1 for data
 	ST   -Y,R26
 ;	data -> Y+0
 	SBI  0xB,4
-; 0000 00A3 
-; 0000 00A4     // Send upper nibble
-; 0000 00A5     lcd_send_nibble(data & 0xF0);
+; 0000 00C0     lcd_send_nibble(data & 0xF0);         // Send upper nibble
 	LD   R30,Y
 	ANDI R30,LOW(0xF0)
 	MOV  R26,R30
 	RCALL _lcd_send_nibble
-; 0000 00A6 
-; 0000 00A7     // Send lower nibble
-; 0000 00A8     lcd_send_nibble((data << 4) & 0xF0);
+; 0000 00C1     lcd_send_nibble((data << 4) & 0xF0);  // Send lower nibble
 	LD   R30,Y
 	SWAP R30
 	ANDI R30,LOW(0xF0)
 	MOV  R26,R30
 	RCALL _lcd_send_nibble
-; 0000 00A9 
-; 0000 00AA     delay_us(50);
-	__DELAY_USW 200
-; 0000 00AB }
+; 0000 00C2     delay_us(50);
+	__DELAY_USB 17
+; 0000 00C3 }
 _0x2060003:
 	ADIW R28,1
 	RET
 ; .FEND
 ;
 ;void lcd_init(void)
-; 0000 00AE {
+; 0000 00C6 {
 _lcd_init:
 ; .FSTART _lcd_init
-; 0000 00AF     // Configure all LCD pins as outputs
-; 0000 00B0     // RS pin
-; 0000 00B1     LCD_RS_DDR |= (1 << LCD_RS_PIN);
+; 0000 00C7     // Configure all LCD pins as outputs
+; 0000 00C8     LCD_RS_DDR |= (1 << LCD_RS_PIN);
 	SBI  0xA,4
-; 0000 00B2     LCD_RS_PORT &= ~(1 << LCD_RS_PIN);  // Start with RS low
-	CBI  0xB,4
-; 0000 00B3 
-; 0000 00B4     // EN pin
-; 0000 00B5     LCD_EN_DDR |= (1 << LCD_EN_PIN);
+; 0000 00C9     LCD_EN_DDR |= (1 << LCD_EN_PIN);
 	SBI  0xA,5
-; 0000 00B6     LCD_EN_PORT &= ~(1 << LCD_EN_PIN);  // Start with EN low
-	CBI  0xB,5
-; 0000 00B7 
-; 0000 00B8     // D4-D7 pins
-; 0000 00B9     LCD_D4_DDR |= (1 << LCD_D4_PIN);
+; 0000 00CA     LCD_D4_DDR |= (1 << LCD_D4_PIN);
 	SBI  0xA,6
-; 0000 00BA     LCD_D5_DDR |= (1 << LCD_D5_PIN);
+; 0000 00CB     LCD_D5_DDR |= (1 << LCD_D5_PIN);
 	SBI  0xA,7
-; 0000 00BB     LCD_D6_DDR |= (1 << LCD_D6_PIN);
+; 0000 00CC     LCD_D6_DDR |= (1 << LCD_D6_PIN);
 	SBI  0x4,0
-; 0000 00BC     LCD_D7_DDR |= (1 << LCD_D7_PIN);
+; 0000 00CD     LCD_D7_DDR |= (1 << LCD_D7_PIN);
 	SBI  0x4,1
-; 0000 00BD 
-; 0000 00BE     // Initialize all data pins to low
-; 0000 00BF     LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
+; 0000 00CE 
+; 0000 00CF     // Initialize all pins to low
+; 0000 00D0     LCD_RS_PORT &= ~(1 << LCD_RS_PIN);
+	CBI  0xB,4
+; 0000 00D1     LCD_EN_PORT &= ~(1 << LCD_EN_PIN);
+	CBI  0xB,5
+; 0000 00D2     LCD_D4_PORT &= ~(1 << LCD_D4_PIN);
 	CBI  0xB,6
-; 0000 00C0     LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
+; 0000 00D3     LCD_D5_PORT &= ~(1 << LCD_D5_PIN);
 	CBI  0xB,7
-; 0000 00C1     LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
+; 0000 00D4     LCD_D6_PORT &= ~(1 << LCD_D6_PIN);
 	CBI  0x5,0
-; 0000 00C2     LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
+; 0000 00D5     LCD_D7_PORT &= ~(1 << LCD_D7_PIN);
 	CBI  0x5,1
-; 0000 00C3 
-; 0000 00C4     delay_ms(20);  // Wait for LCD to power up
+; 0000 00D6 
+; 0000 00D7     delay_ms(20);  // Wait for LCD to power up
 	LDI  R26,LOW(20)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00C5 
-; 0000 00C6     // Initialization sequence
-; 0000 00C7     lcd_send_nibble(0x30);  // Function set 8-bit
+; 0000 00D8 
+; 0000 00D9     // Initialization sequence for 4-bit mode
+; 0000 00DA     lcd_send_nibble(0x30);
 	LDI  R26,LOW(48)
 	RCALL _lcd_send_nibble
-; 0000 00C8     delay_ms(5);
+; 0000 00DB     delay_ms(5);
 	LDI  R26,LOW(5)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00C9     lcd_send_nibble(0x30);  // Function set 8-bit
+; 0000 00DC     lcd_send_nibble(0x30);
 	LDI  R26,LOW(48)
 	RCALL _lcd_send_nibble
-; 0000 00CA     delay_us(150);
-	__DELAY_USW 600
-; 0000 00CB     lcd_send_nibble(0x30);  // Function set 8-bit
+; 0000 00DD     delay_us(150);
+	__DELAY_USB 50
+; 0000 00DE     lcd_send_nibble(0x30);
 	LDI  R26,LOW(48)
 	RCALL _lcd_send_nibble
-; 0000 00CC     delay_ms(5);
+; 0000 00DF     delay_ms(5);
 	LDI  R26,LOW(5)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00CD 
-; 0000 00CE     // Set to 4-bit mode
-; 0000 00CF     lcd_send_nibble(0x20);  // Function set 4-bit
+; 0000 00E0     lcd_send_nibble(0x20);  // Set to 4-bit mode
 	LDI  R26,LOW(32)
 	RCALL _lcd_send_nibble
-; 0000 00D0     delay_ms(5);
+; 0000 00E1     delay_ms(5);
 	LDI  R26,LOW(5)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00D1 
-; 0000 00D2     // Now in 4-bit mode, we can use lcd_cmd
-; 0000 00D3     // Function set: 4-bit, 2 lines, 5x7 dots
-; 0000 00D4     lcd_cmd(0x28);
+; 0000 00E2 
+; 0000 00E3     // Configure LCD
+; 0000 00E4     lcd_cmd(0x28);  // 4-bit, 2 lines, 5x7 dots
 	LDI  R26,LOW(40)
 	RCALL _lcd_cmd
-; 0000 00D5     delay_ms(1);
+; 0000 00E5     delay_ms(1);
 	LDI  R26,LOW(1)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00D6 
-; 0000 00D7     // Display on, cursor off
-; 0000 00D8     lcd_cmd(0x0C);
+; 0000 00E6     lcd_cmd(0x0C);  // Display on, cursor off
 	LDI  R26,LOW(12)
 	RCALL _lcd_cmd
-; 0000 00D9     delay_ms(1);
+; 0000 00E7     delay_ms(1);
 	LDI  R26,LOW(1)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00DA 
-; 0000 00DB     // Clear display
-; 0000 00DC     lcd_cmd(0x01);
+; 0000 00E8     lcd_cmd(0x01);  // Clear display
 	LDI  R26,LOW(1)
 	RCALL _lcd_cmd
-; 0000 00DD     delay_ms(2);
+; 0000 00E9     delay_ms(2);
 	LDI  R26,LOW(2)
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00DE 
-; 0000 00DF     // Entry mode set: increment, no shift
-; 0000 00E0     lcd_cmd(0x06);
+; 0000 00EA     lcd_cmd(0x06);  // Entry mode: increment, no shift
 	LDI  R26,LOW(6)
 	RCALL _lcd_cmd
-; 0000 00E1     delay_ms(1);
+; 0000 00EB     delay_ms(1);
 	LDI  R26,LOW(1)
 	RJMP _0x2060002
-; 0000 00E2 }
+; 0000 00EC }
 ; .FEND
 ;
 ;void lcd_gotoxy(unsigned char x, unsigned char y)
-; 0000 00E5 {
+; 0000 00EF {
 _lcd_gotoxy:
 ; .FSTART _lcd_gotoxy
-; 0000 00E6     unsigned char address;
-; 0000 00E7 
-; 0000 00E8     if(y == 0)
+; 0000 00F0     unsigned char address;
+; 0000 00F1 
+; 0000 00F2     if(y == 0)
 	ST   -Y,R26
 	ST   -Y,R17
 ;	x -> Y+2
@@ -1734,111 +1840,138 @@ _lcd_gotoxy:
 ;	address -> R17
 	LDD  R30,Y+1
 	CPI  R30,0
-	BRNE _0x20
-; 0000 00E9         address = 0x80 + x;
+	BRNE _0x27
+; 0000 00F3         address = 0x80 + x;
 	LDD  R30,Y+2
 	SUBI R30,-LOW(128)
-	RJMP _0x2C
-; 0000 00EA     else
-_0x20:
-; 0000 00EB         address = 0xC0 + x;
+	RJMP _0x3D
+; 0000 00F4     else
+_0x27:
+; 0000 00F5         address = 0xC0 + x;
 	LDD  R30,Y+2
 	SUBI R30,-LOW(192)
-_0x2C:
+_0x3D:
 	MOV  R17,R30
-; 0000 00EC 
-; 0000 00ED     lcd_cmd(address);
+; 0000 00F6 
+; 0000 00F7     lcd_cmd(address);
 	MOV  R26,R17
 	RCALL _lcd_cmd
-; 0000 00EE }
+; 0000 00F8 }
 	LDD  R17,Y+0
 	ADIW R28,3
 	RET
 ; .FEND
 ;
 ;void lcd_puts(char *str)
-; 0000 00F1 {
+; 0000 00FB {
 _lcd_puts:
 ; .FSTART _lcd_puts
-; 0000 00F2     while(*str)
+; 0000 00FC     while(*str)
 	ST   -Y,R27
 	ST   -Y,R26
 ;	*str -> Y+0
-_0x22:
+_0x29:
 	LD   R26,Y
 	LDD  R27,Y+1
 	LD   R30,X
 	CPI  R30,0
-	BREQ _0x24
-; 0000 00F3     {
-; 0000 00F4         lcd_data(*str++);
+	BREQ _0x2B
+; 0000 00FD     {
+; 0000 00FE         lcd_data(*str++);
 	LD   R30,X+
 	ST   Y,R26
 	STD  Y+1,R27
 	MOV  R26,R30
 	RCALL _lcd_data
-; 0000 00F5     }
-	RJMP _0x22
-_0x24:
-; 0000 00F6 }
+; 0000 00FF     }
+	RJMP _0x29
+_0x2B:
+; 0000 0100 }
 	ADIW R28,2
 	RET
 ; .FEND
 ;
 ;void lcd_clear(void)
-; 0000 00F9 {
+; 0000 0103 {
 _lcd_clear:
 ; .FSTART _lcd_clear
-; 0000 00FA     lcd_cmd(0x01);
+; 0000 0104     lcd_cmd(0x01);
 	LDI  R26,LOW(1)
 	RCALL _lcd_cmd
-; 0000 00FB     delay_ms(2);
+; 0000 0105     delay_ms(2);
 	LDI  R26,LOW(2)
 _0x2060002:
 	LDI  R27,0
 	CALL _delay_ms
-; 0000 00FC }
+; 0000 0106 }
 	RET
 ; .FEND
 ;
 ;void main(void)
-; 0000 00FF {
+; 0000 0109 {
 _main:
 ; .FSTART _main
-; 0000 0100     char buffer[17];
-; 0000 0101 
-; 0000 0102     // Initialize LCD
-; 0000 0103     lcd_init();
+; 0000 010A     char buffer[17];
+; 0000 010B     unsigned char result;
+; 0000 010C 
+; 0000 010D     // Initialize LCD
+; 0000 010E     lcd_init();
 	SBIW R28,17
 ;	buffer -> Y+0
+;	result -> R17
 	RCALL _lcd_init
-; 0000 0104     lcd_clear();
+; 0000 010F     lcd_clear();
 	RCALL _lcd_clear
-; 0000 0105 
-; 0000 0106     while(1)
-_0x25:
-; 0000 0107     {
-; 0000 0108         if(humid_read(&temp, &hum) == 0)
+; 0000 0110 
+; 0000 0111     // Display startup message
+; 0000 0112     lcd_gotoxy(0, 0);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(0)
+	RCALL _lcd_gotoxy
+; 0000 0113     lcd_puts("DHT11 Reader");
+	__POINTW2MN _0x2C,0
+	RCALL _lcd_puts
+; 0000 0114     lcd_gotoxy(0, 1);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(1)
+	RCALL _lcd_gotoxy
+; 0000 0115     lcd_puts("Initializing...");
+	__POINTW2MN _0x2C,13
+	RCALL _lcd_puts
+; 0000 0116     delay_ms(20000);
+	LDI  R26,LOW(20000)
+	LDI  R27,HIGH(20000)
+	CALL _delay_ms
+; 0000 0117 
+; 0000 0118     while(1)
+_0x2D:
+; 0000 0119     {
+; 0000 011A         result = dht11_read(&temp, &hum);
 	LDI  R30,LOW(4)
 	LDI  R31,HIGH(4)
 	ST   -Y,R31
 	ST   -Y,R30
 	LDI  R26,LOW(3)
 	LDI  R27,HIGH(3)
-	RCALL _humid_read
-	CPI  R30,0
-	BRNE _0x28
-; 0000 0109         {
-; 0000 010A             lcd_gotoxy(0, 0);
+	RCALL _dht11_read
+	MOV  R17,R30
+; 0000 011B 
+; 0000 011C         if(result == 0)
+	CPI  R17,0
+	BRNE _0x30
+; 0000 011D         {
+; 0000 011E             lcd_gotoxy(0, 0);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	RCALL _lcd_gotoxy
-; 0000 010B             sprintf(buffer, "Temp:%d C   ", temp);
+; 0000 011F             sprintf(buffer, "Temp:%d C   ", temp);
 	MOVW R30,R28
 	ST   -Y,R31
 	ST   -Y,R30
-	__POINTW1FN _0x0,0
+	__POINTW1FN _0x0,29
 	ST   -Y,R31
 	ST   -Y,R30
 	MOV  R30,R4
@@ -1849,20 +1982,20 @@ _0x25:
 	LDI  R24,4
 	RCALL _sprintf
 	ADIW R28,8
-; 0000 010C             lcd_puts(buffer);
+; 0000 0120             lcd_puts(buffer);
 	MOVW R26,R28
 	RCALL _lcd_puts
-; 0000 010D 
-; 0000 010E             lcd_gotoxy(0, 1);
+; 0000 0121 
+; 0000 0122             lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	RCALL _lcd_gotoxy
-; 0000 010F             sprintf(buffer, "Hum:%d %%   ", hum);
+; 0000 0123             sprintf(buffer, "Hum:%d %%   ", hum);
 	MOVW R30,R28
 	ST   -Y,R31
 	ST   -Y,R30
-	__POINTW1FN _0x0,13
+	__POINTW1FN _0x0,42
 	ST   -Y,R31
 	ST   -Y,R30
 	MOV  R30,R3
@@ -1873,38 +2006,107 @@ _0x25:
 	LDI  R24,4
 	RCALL _sprintf
 	ADIW R28,8
-; 0000 0110             lcd_puts(buffer);
+; 0000 0124             lcd_puts(buffer);
 	MOVW R26,R28
-	RJMP _0x2D
-; 0000 0111         }
-; 0000 0112         else
-_0x28:
-; 0000 0113         {
-; 0000 0114             lcd_gotoxy(0, 0);
+	RCALL _lcd_puts
+; 0000 0125         }
+; 0000 0126         else
+	RJMP _0x31
+_0x30:
+; 0000 0127         {
+; 0000 0128             lcd_gotoxy(0, 0);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	RCALL _lcd_gotoxy
-; 0000 0115             lcd_puts("DHT11 Error   ");
-	__POINTW2MN _0x2A,0
-_0x2D:
+; 0000 0129             lcd_puts("DHT11 Error:   ");
+	__POINTW2MN _0x2C,29
 	RCALL _lcd_puts
-; 0000 0116         }
-; 0000 0117 
-; 0000 0118         delay_ms(2000);
+; 0000 012A 
+; 0000 012B             lcd_gotoxy(0, 1);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(1)
+	RCALL _lcd_gotoxy
+; 0000 012C             switch(result)
+	MOV  R30,R17
+	LDI  R31,0
+; 0000 012D             {
+; 0000 012E                 case 1: lcd_puts("No Response   "); break;
+	CPI  R30,LOW(0x1)
+	LDI  R26,HIGH(0x1)
+	CPC  R31,R26
+	BRNE _0x35
+	__POINTW2MN _0x2C,45
+	RJMP _0x3E
+; 0000 012F                 case 2: lcd_puts("Init timeout  "); break;
+_0x35:
+	CPI  R30,LOW(0x2)
+	LDI  R26,HIGH(0x2)
+	CPC  R31,R26
+	BRNE _0x36
+	__POINTW2MN _0x2C,60
+	RJMP _0x3E
+; 0000 0130                 case 3: lcd_puts("Data timeout  "); break;
+_0x36:
+	CPI  R30,LOW(0x3)
+	LDI  R26,HIGH(0x3)
+	CPC  R31,R26
+	BRNE _0x37
+	__POINTW2MN _0x2C,75
+	RJMP _0x3E
+; 0000 0131                 case 4: lcd_puts("Read timeout  "); break;
+_0x37:
+	CPI  R30,LOW(0x4)
+	LDI  R26,HIGH(0x4)
+	CPC  R31,R26
+	BRNE _0x38
+	__POINTW2MN _0x2C,90
+	RJMP _0x3E
+; 0000 0132                 case 5: lcd_puts("Bit timeout   "); break;
+_0x38:
+	CPI  R30,LOW(0x5)
+	LDI  R26,HIGH(0x5)
+	CPC  R31,R26
+	BRNE _0x39
+	__POINTW2MN _0x2C,105
+	RJMP _0x3E
+; 0000 0133                 case 6: lcd_puts("Checksum error"); break;
+_0x39:
+	CPI  R30,LOW(0x6)
+	LDI  R26,HIGH(0x6)
+	CPC  R31,R26
+	BRNE _0x3B
+	__POINTW2MN _0x2C,120
+	RJMP _0x3E
+; 0000 0134                 default: lcd_puts("Unknown error "); break;
+_0x3B:
+	__POINTW2MN _0x2C,135
+_0x3E:
+	RCALL _lcd_puts
+; 0000 0135 
+; 0000 0136 
+; 0000 0137 
+; 0000 0138             }
+; 0000 0139             lcd_clear();
+	RCALL _lcd_clear
+; 0000 013A         }
+_0x31:
+; 0000 013B 
+; 0000 013C         delay_ms(2000);
 	LDI  R26,LOW(2000)
 	LDI  R27,HIGH(2000)
 	CALL _delay_ms
-; 0000 0119     }
-	RJMP _0x25
-; 0000 011A }
-_0x2B:
-	RJMP _0x2B
+; 0000 013D     }
+	RJMP _0x2D
+; 0000 013E }
+_0x3C:
+	RJMP _0x3C
 ; .FEND
 
 	.DSEG
-_0x2A:
-	.BYTE 0xF
+_0x2C:
+	.BYTE 0x96
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
 	.EQU __se_bit=0x01
@@ -2521,7 +2723,7 @@ _delay_ms:
 	adiw r26,0
 	breq __delay_ms1
 __delay_ms0:
-	__DELAY_USW 0xFA0
+	__DELAY_USW 0xFA
 	wdr
 	sbiw r26,1
 	brne __delay_ms0
