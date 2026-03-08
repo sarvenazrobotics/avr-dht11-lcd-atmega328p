@@ -1,4 +1,4 @@
-/
+
 #include <mega328p.h>
 #include <delay.h>
 #include "lcd.h"
