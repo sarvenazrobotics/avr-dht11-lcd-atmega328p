@@ -275,7 +275,7 @@ void main(void)
     lcd_puts("DHT11 Reader");
     lcd_gotoxy(0, 1);
     lcd_puts("Initializing...");
-    delay_ms(20000);
+    delay_ms(2000);
 
     while(1)
     {
@@ -284,17 +284,30 @@ void main(void)
         if(result == 0)
         {
             lcd_gotoxy(0, 0);
-            sprintf(buffer, "Temp:%d C   ", temp);
+            lcd_puts("                ");  // 16 spaces to clear line
+            
+            lcd_gotoxy(0, 1);
+            lcd_puts("                ");  // 16 spaces to clear line
+            
+            // Now display the data
+            lcd_gotoxy(0, 0);
+            sprintf(buffer, "Temp:%3d C", temp);  // Use %3d to fix width
             lcd_puts(buffer);
 
             lcd_gotoxy(0, 1);
-            sprintf(buffer, "Hum:%d %%   ", hum);
+            sprintf(buffer, "Hum:%3d %%", hum);   // Use %3d to fix width
             lcd_puts(buffer);
         }
         else
         {
+             lcd_gotoxy(0, 0);
+            lcd_puts("                ");  // Clear line
+            
+            lcd_gotoxy(0, 1);
+            lcd_puts("                ");  // Clear line
+            
             lcd_gotoxy(0, 0);
-            lcd_puts("DHT11 Error:   ");
+            lcd_puts("DHT11 Error:");
             
             lcd_gotoxy(0, 1);
             switch(result)
@@ -310,7 +323,7 @@ void main(void)
                 
                 
             }
-            lcd_clear();
+            
         }
 
         delay_ms(2000);

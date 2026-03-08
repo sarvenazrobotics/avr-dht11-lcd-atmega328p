@@ -750,7 +750,7 @@
 ;PCODE: $000001BC VOL: 0
 ;PCODE: $000001BD VOL: 0
 ;PCODE: $000001BE VOL: 0
-; 0000 0116     delay_ms(20000);
+; 0000 0116     delay_ms(2000);
 ;PCODE: $000001BF VOL: 0
 ;PCODE: $000001C0 VOL: 0
 ; 0000 0117 
@@ -773,29 +773,32 @@
 ;PCODE: $000001CA VOL: 0
 ;PCODE: $000001CB VOL: 0
 ;PCODE: $000001CC VOL: 0
-; 0000 011F             sprintf(buffer, "Temp:%d C   ", temp);
+; 0000 011F             lcd_puts("                ");  // 16 spaces to clear line
 ;PCODE: $000001CD VOL: 0
 ;PCODE: $000001CE VOL: 0
 ;PCODE: $000001CF VOL: 0
+; 0000 0120 
+; 0000 0121             lcd_gotoxy(0, 1);
 ;PCODE: $000001D0 VOL: 0
 ;PCODE: $000001D1 VOL: 0
 ;PCODE: $000001D2 VOL: 0
 ;PCODE: $000001D3 VOL: 0
+; 0000 0122             lcd_puts("                ");  // 16 spaces to clear line
 ;PCODE: $000001D4 VOL: 0
 ;PCODE: $000001D5 VOL: 0
 ;PCODE: $000001D6 VOL: 0
+; 0000 0123 
+; 0000 0124             // Now display the data
+; 0000 0125             lcd_gotoxy(0, 0);
 ;PCODE: $000001D7 VOL: 0
 ;PCODE: $000001D8 VOL: 0
-; 0000 0120             lcd_puts(buffer);
 ;PCODE: $000001D9 VOL: 0
 ;PCODE: $000001DA VOL: 0
-; 0000 0121 
-; 0000 0122             lcd_gotoxy(0, 1);
+; 0000 0126             sprintf(buffer, "Temp:%3d C", temp);  // Use %3d to fix width
 ;PCODE: $000001DB VOL: 0
 ;PCODE: $000001DC VOL: 0
 ;PCODE: $000001DD VOL: 0
 ;PCODE: $000001DE VOL: 0
-; 0000 0123             sprintf(buffer, "Hum:%d %%   ", hum);
 ;PCODE: $000001DF VOL: 0
 ;PCODE: $000001E0 VOL: 0
 ;PCODE: $000001E1 VOL: 0
@@ -804,77 +807,83 @@
 ;PCODE: $000001E4 VOL: 0
 ;PCODE: $000001E5 VOL: 0
 ;PCODE: $000001E6 VOL: 0
+; 0000 0127             lcd_puts(buffer);
 ;PCODE: $000001E7 VOL: 0
 ;PCODE: $000001E8 VOL: 0
+; 0000 0128 
+; 0000 0129             lcd_gotoxy(0, 1);
 ;PCODE: $000001E9 VOL: 0
 ;PCODE: $000001EA VOL: 0
-; 0000 0124             lcd_puts(buffer);
 ;PCODE: $000001EB VOL: 0
 ;PCODE: $000001EC VOL: 0
-; 0000 0125         }
-; 0000 0126         else
+; 0000 012A             sprintf(buffer, "Hum:%3d %%", hum);   // Use %3d to fix width
 ;PCODE: $000001ED VOL: 0
 ;PCODE: $000001EE VOL: 0
-; 0000 0127         {
-; 0000 0128             lcd_gotoxy(0, 0);
 ;PCODE: $000001EF VOL: 0
 ;PCODE: $000001F0 VOL: 0
 ;PCODE: $000001F1 VOL: 0
 ;PCODE: $000001F2 VOL: 0
-; 0000 0129             lcd_puts("DHT11 Error:   ");
 ;PCODE: $000001F3 VOL: 0
 ;PCODE: $000001F4 VOL: 0
 ;PCODE: $000001F5 VOL: 0
-; 0000 012A 
-; 0000 012B             lcd_gotoxy(0, 1);
 ;PCODE: $000001F6 VOL: 0
 ;PCODE: $000001F7 VOL: 0
 ;PCODE: $000001F8 VOL: 0
+; 0000 012B             lcd_puts(buffer);
 ;PCODE: $000001F9 VOL: 0
-; 0000 012C             switch(result)
 ;PCODE: $000001FA VOL: 0
+; 0000 012C         }
+; 0000 012D         else
 ;PCODE: $000001FB VOL: 0
-; 0000 012D             {
-; 0000 012E                 case 1: lcd_puts("No Response   "); break;
 ;PCODE: $000001FC VOL: 0
+; 0000 012E         {
+; 0000 012F              lcd_gotoxy(0, 0);
 ;PCODE: $000001FD VOL: 0
 ;PCODE: $000001FE VOL: 0
 ;PCODE: $000001FF VOL: 0
 ;PCODE: $00000200 VOL: 0
+; 0000 0130             lcd_puts("                ");  // Clear line
 ;PCODE: $00000201 VOL: 0
-; 0000 012F                 case 2: lcd_puts("Init timeout  "); break;
 ;PCODE: $00000202 VOL: 0
 ;PCODE: $00000203 VOL: 0
+; 0000 0131 
+; 0000 0132             lcd_gotoxy(0, 1);
 ;PCODE: $00000204 VOL: 0
 ;PCODE: $00000205 VOL: 0
 ;PCODE: $00000206 VOL: 0
 ;PCODE: $00000207 VOL: 0
+; 0000 0133             lcd_puts("                ");  // Clear line
 ;PCODE: $00000208 VOL: 0
-; 0000 0130                 case 3: lcd_puts("Data timeout  "); break;
 ;PCODE: $00000209 VOL: 0
 ;PCODE: $0000020A VOL: 0
+; 0000 0134 
+; 0000 0135             lcd_gotoxy(0, 0);
 ;PCODE: $0000020B VOL: 0
 ;PCODE: $0000020C VOL: 0
 ;PCODE: $0000020D VOL: 0
 ;PCODE: $0000020E VOL: 0
+; 0000 0136             lcd_puts("DHT11 Error:");
 ;PCODE: $0000020F VOL: 0
-; 0000 0131                 case 4: lcd_puts("Read timeout  "); break;
 ;PCODE: $00000210 VOL: 0
 ;PCODE: $00000211 VOL: 0
+; 0000 0137 
+; 0000 0138             lcd_gotoxy(0, 1);
 ;PCODE: $00000212 VOL: 0
 ;PCODE: $00000213 VOL: 0
 ;PCODE: $00000214 VOL: 0
 ;PCODE: $00000215 VOL: 0
+; 0000 0139             switch(result)
 ;PCODE: $00000216 VOL: 0
-; 0000 0132                 case 5: lcd_puts("Bit timeout   "); break;
 ;PCODE: $00000217 VOL: 0
+; 0000 013A             {
+; 0000 013B                 case 1: lcd_puts("No Response   "); break;
 ;PCODE: $00000218 VOL: 0
 ;PCODE: $00000219 VOL: 0
 ;PCODE: $0000021A VOL: 0
 ;PCODE: $0000021B VOL: 0
 ;PCODE: $0000021C VOL: 0
 ;PCODE: $0000021D VOL: 0
-; 0000 0133                 case 6: lcd_puts("Checksum error"); break;
+; 0000 013C                 case 2: lcd_puts("Init timeout  "); break;
 ;PCODE: $0000021E VOL: 0
 ;PCODE: $0000021F VOL: 0
 ;PCODE: $00000220 VOL: 0
@@ -882,34 +891,65 @@
 ;PCODE: $00000222 VOL: 0
 ;PCODE: $00000223 VOL: 0
 ;PCODE: $00000224 VOL: 0
-; 0000 0134                 default: lcd_puts("Unknown error "); break;
+; 0000 013D                 case 3: lcd_puts("Data timeout  "); break;
 ;PCODE: $00000225 VOL: 0
 ;PCODE: $00000226 VOL: 0
 ;PCODE: $00000227 VOL: 0
 ;PCODE: $00000228 VOL: 0
 ;PCODE: $00000229 VOL: 0
-; 0000 0135 
-; 0000 0136 
-; 0000 0137 
-; 0000 0138             }
 ;PCODE: $0000022A VOL: 0
-; 0000 0139             lcd_clear();
 ;PCODE: $0000022B VOL: 0
-; 0000 013A         }
+; 0000 013E                 case 4: lcd_puts("Read timeout  "); break;
 ;PCODE: $0000022C VOL: 0
-; 0000 013B 
-; 0000 013C         delay_ms(2000);
 ;PCODE: $0000022D VOL: 0
 ;PCODE: $0000022E VOL: 0
-; 0000 013D     }
 ;PCODE: $0000022F VOL: 0
 ;PCODE: $00000230 VOL: 0
-; 0000 013E }
 ;PCODE: $00000231 VOL: 0
 ;PCODE: $00000232 VOL: 0
+; 0000 013F                 case 5: lcd_puts("Bit timeout   "); break;
 ;PCODE: $00000233 VOL: 0
 ;PCODE: $00000234 VOL: 0
+;PCODE: $00000235 VOL: 0
+;PCODE: $00000236 VOL: 0
+;PCODE: $00000237 VOL: 0
+;PCODE: $00000238 VOL: 0
+;PCODE: $00000239 VOL: 0
+; 0000 0140                 case 6: lcd_puts("Checksum error"); break;
+;PCODE: $0000023A VOL: 0
+;PCODE: $0000023B VOL: 0
+;PCODE: $0000023C VOL: 0
+;PCODE: $0000023D VOL: 0
+;PCODE: $0000023E VOL: 0
+;PCODE: $0000023F VOL: 0
+;PCODE: $00000240 VOL: 0
+; 0000 0141                 default: lcd_puts("Unknown error "); break;
+;PCODE: $00000241 VOL: 0
+;PCODE: $00000242 VOL: 0
+;PCODE: $00000243 VOL: 0
+;PCODE: $00000244 VOL: 0
+;PCODE: $00000245 VOL: 0
+; 0000 0142 
+; 0000 0143 
+; 0000 0144 
+; 0000 0145             }
+;PCODE: $00000246 VOL: 0
+; 0000 0146 
+; 0000 0147         }
+;PCODE: $00000247 VOL: 0
+; 0000 0148 
+; 0000 0149         delay_ms(2000);
+;PCODE: $00000248 VOL: 0
+;PCODE: $00000249 VOL: 0
+; 0000 014A     }
+;PCODE: $0000024A VOL: 0
+;PCODE: $0000024B VOL: 0
+; 0000 014B }
+;PCODE: $0000024C VOL: 0
+;PCODE: $0000024D VOL: 0
+;PCODE: $0000024E VOL: 0
+;PCODE: $0000024F VOL: 0
 
 	.DSEG
 _0x2C:
-	.BYTE 0x96
+	.BYTE 0xD7

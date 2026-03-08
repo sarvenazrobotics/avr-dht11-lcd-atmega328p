@@ -1137,25 +1137,27 @@ _0x0:
 	.DB  0x44,0x48,0x54,0x31,0x31,0x20,0x52,0x65
 	.DB  0x61,0x64,0x65,0x72,0x0,0x49,0x6E,0x69
 	.DB  0x74,0x69,0x61,0x6C,0x69,0x7A,0x69,0x6E
-	.DB  0x67,0x2E,0x2E,0x2E,0x0,0x54,0x65,0x6D
-	.DB  0x70,0x3A,0x25,0x64,0x20,0x43,0x20,0x20
-	.DB  0x20,0x0,0x48,0x75,0x6D,0x3A,0x25,0x64
-	.DB  0x20,0x25,0x25,0x20,0x20,0x20,0x0,0x44
-	.DB  0x48,0x54,0x31,0x31,0x20,0x45,0x72,0x72
-	.DB  0x6F,0x72,0x3A,0x20,0x20,0x20,0x0,0x4E
-	.DB  0x6F,0x20,0x52,0x65,0x73,0x70,0x6F,0x6E
-	.DB  0x73,0x65,0x20,0x20,0x20,0x0,0x49,0x6E
-	.DB  0x69,0x74,0x20,0x74,0x69,0x6D,0x65,0x6F
-	.DB  0x75,0x74,0x20,0x20,0x0,0x44,0x61,0x74
-	.DB  0x61,0x20,0x74,0x69,0x6D,0x65,0x6F,0x75
-	.DB  0x74,0x20,0x20,0x0,0x52,0x65,0x61,0x64
+	.DB  0x67,0x2E,0x2E,0x2E,0x0,0x20,0x20,0x20
+	.DB  0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20
+	.DB  0x20,0x20,0x20,0x20,0x20,0x0,0x54,0x65
+	.DB  0x6D,0x70,0x3A,0x25,0x33,0x64,0x20,0x43
+	.DB  0x0,0x48,0x75,0x6D,0x3A,0x25,0x33,0x64
+	.DB  0x20,0x25,0x25,0x0,0x44,0x48,0x54,0x31
+	.DB  0x31,0x20,0x45,0x72,0x72,0x6F,0x72,0x3A
+	.DB  0x0,0x4E,0x6F,0x20,0x52,0x65,0x73,0x70
+	.DB  0x6F,0x6E,0x73,0x65,0x20,0x20,0x20,0x0
+	.DB  0x49,0x6E,0x69,0x74,0x20,0x74,0x69,0x6D
+	.DB  0x65,0x6F,0x75,0x74,0x20,0x20,0x0,0x44
+	.DB  0x61,0x74,0x61,0x20,0x74,0x69,0x6D,0x65
+	.DB  0x6F,0x75,0x74,0x20,0x20,0x0,0x52,0x65
+	.DB  0x61,0x64,0x20,0x74,0x69,0x6D,0x65,0x6F
+	.DB  0x75,0x74,0x20,0x20,0x0,0x42,0x69,0x74
 	.DB  0x20,0x74,0x69,0x6D,0x65,0x6F,0x75,0x74
-	.DB  0x20,0x20,0x0,0x42,0x69,0x74,0x20,0x74
-	.DB  0x69,0x6D,0x65,0x6F,0x75,0x74,0x20,0x20
-	.DB  0x20,0x0,0x43,0x68,0x65,0x63,0x6B,0x73
-	.DB  0x75,0x6D,0x20,0x65,0x72,0x72,0x6F,0x72
-	.DB  0x0,0x55,0x6E,0x6B,0x6E,0x6F,0x77,0x6E
-	.DB  0x20,0x65,0x72,0x72,0x6F,0x72,0x20,0x0
+	.DB  0x20,0x20,0x20,0x0,0x43,0x68,0x65,0x63
+	.DB  0x6B,0x73,0x75,0x6D,0x20,0x65,0x72,0x72
+	.DB  0x6F,0x72,0x0,0x55,0x6E,0x6B,0x6E,0x6F
+	.DB  0x77,0x6E,0x20,0x65,0x72,0x72,0x6F,0x72
+	.DB  0x20,0x0
 
 __GLOBAL_INI_TBL:
 	.DW  0x0D
@@ -1166,37 +1168,53 @@ __GLOBAL_INI_TBL:
 	.DW  _0x2C+13
 	.DW  _0x0*2+13
 
-	.DW  0x10
+	.DW  0x11
 	.DW  _0x2C+29
-	.DW  _0x0*2+55
+	.DW  _0x0*2+29
+
+	.DW  0x11
+	.DW  _0x2C+46
+	.DW  _0x0*2+29
+
+	.DW  0x11
+	.DW  _0x2C+63
+	.DW  _0x0*2+29
+
+	.DW  0x11
+	.DW  _0x2C+80
+	.DW  _0x0*2+29
+
+	.DW  0x0D
+	.DW  _0x2C+97
+	.DW  _0x0*2+68
 
 	.DW  0x0F
-	.DW  _0x2C+45
-	.DW  _0x0*2+71
+	.DW  _0x2C+110
+	.DW  _0x0*2+81
 
 	.DW  0x0F
-	.DW  _0x2C+60
-	.DW  _0x0*2+86
+	.DW  _0x2C+125
+	.DW  _0x0*2+96
 
 	.DW  0x0F
-	.DW  _0x2C+75
-	.DW  _0x0*2+101
+	.DW  _0x2C+140
+	.DW  _0x0*2+111
 
 	.DW  0x0F
-	.DW  _0x2C+90
-	.DW  _0x0*2+116
+	.DW  _0x2C+155
+	.DW  _0x0*2+126
 
 	.DW  0x0F
-	.DW  _0x2C+105
-	.DW  _0x0*2+131
+	.DW  _0x2C+170
+	.DW  _0x0*2+141
 
 	.DW  0x0F
-	.DW  _0x2C+120
-	.DW  _0x0*2+146
+	.DW  _0x2C+185
+	.DW  _0x0*2+156
 
 	.DW  0x0F
-	.DW  _0x2C+135
-	.DW  _0x0*2+161
+	.DW  _0x2C+200
+	.DW  _0x0*2+171
 
 _0xFFFFFFFF:
 	.DW  0
@@ -1940,9 +1958,9 @@ _main:
 ; 0000 0115     lcd_puts("Initializing...");
 	__POINTW2MN _0x2C,13
 	RCALL _lcd_puts
-; 0000 0116     delay_ms(20000);
-	LDI  R26,LOW(20000)
-	LDI  R27,HIGH(20000)
+; 0000 0116     delay_ms(2000);
+	LDI  R26,LOW(2000)
+	LDI  R27,HIGH(2000)
 	CALL _delay_ms
 ; 0000 0117 
 ; 0000 0118     while(1)
@@ -1967,11 +1985,30 @@ _0x2D:
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	RCALL _lcd_gotoxy
-; 0000 011F             sprintf(buffer, "Temp:%d C   ", temp);
+; 0000 011F             lcd_puts("                ");  // 16 spaces to clear line
+	__POINTW2MN _0x2C,29
+	RCALL _lcd_puts
+; 0000 0120 
+; 0000 0121             lcd_gotoxy(0, 1);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(1)
+	RCALL _lcd_gotoxy
+; 0000 0122             lcd_puts("                ");  // 16 spaces to clear line
+	__POINTW2MN _0x2C,46
+	RCALL _lcd_puts
+; 0000 0123 
+; 0000 0124             // Now display the data
+; 0000 0125             lcd_gotoxy(0, 0);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(0)
+	RCALL _lcd_gotoxy
+; 0000 0126             sprintf(buffer, "Temp:%3d C", temp);  // Use %3d to fix width
 	MOVW R30,R28
 	ST   -Y,R31
 	ST   -Y,R30
-	__POINTW1FN _0x0,29
+	__POINTW1FN _0x0,46
 	ST   -Y,R31
 	ST   -Y,R30
 	MOV  R30,R4
@@ -1982,20 +2019,20 @@ _0x2D:
 	LDI  R24,4
 	RCALL _sprintf
 	ADIW R28,8
-; 0000 0120             lcd_puts(buffer);
+; 0000 0127             lcd_puts(buffer);
 	MOVW R26,R28
 	RCALL _lcd_puts
-; 0000 0121 
-; 0000 0122             lcd_gotoxy(0, 1);
+; 0000 0128 
+; 0000 0129             lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	RCALL _lcd_gotoxy
-; 0000 0123             sprintf(buffer, "Hum:%d %%   ", hum);
+; 0000 012A             sprintf(buffer, "Hum:%3d %%", hum);   // Use %3d to fix width
 	MOVW R30,R28
 	ST   -Y,R31
 	ST   -Y,R30
-	__POINTW1FN _0x0,42
+	__POINTW1FN _0x0,57
 	ST   -Y,R31
 	ST   -Y,R30
 	MOV  R30,R3
@@ -2006,107 +2043,122 @@ _0x2D:
 	LDI  R24,4
 	RCALL _sprintf
 	ADIW R28,8
-; 0000 0124             lcd_puts(buffer);
+; 0000 012B             lcd_puts(buffer);
 	MOVW R26,R28
-	RCALL _lcd_puts
-; 0000 0125         }
-; 0000 0126         else
-	RJMP _0x31
+	RJMP _0x3E
+; 0000 012C         }
+; 0000 012D         else
 _0x30:
-; 0000 0127         {
-; 0000 0128             lcd_gotoxy(0, 0);
+; 0000 012E         {
+; 0000 012F              lcd_gotoxy(0, 0);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(0)
 	RCALL _lcd_gotoxy
-; 0000 0129             lcd_puts("DHT11 Error:   ");
-	__POINTW2MN _0x2C,29
+; 0000 0130             lcd_puts("                ");  // Clear line
+	__POINTW2MN _0x2C,63
 	RCALL _lcd_puts
-; 0000 012A 
-; 0000 012B             lcd_gotoxy(0, 1);
+; 0000 0131 
+; 0000 0132             lcd_gotoxy(0, 1);
 	LDI  R30,LOW(0)
 	ST   -Y,R30
 	LDI  R26,LOW(1)
 	RCALL _lcd_gotoxy
-; 0000 012C             switch(result)
+; 0000 0133             lcd_puts("                ");  // Clear line
+	__POINTW2MN _0x2C,80
+	RCALL _lcd_puts
+; 0000 0134 
+; 0000 0135             lcd_gotoxy(0, 0);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(0)
+	RCALL _lcd_gotoxy
+; 0000 0136             lcd_puts("DHT11 Error:");
+	__POINTW2MN _0x2C,97
+	RCALL _lcd_puts
+; 0000 0137 
+; 0000 0138             lcd_gotoxy(0, 1);
+	LDI  R30,LOW(0)
+	ST   -Y,R30
+	LDI  R26,LOW(1)
+	RCALL _lcd_gotoxy
+; 0000 0139             switch(result)
 	MOV  R30,R17
 	LDI  R31,0
-; 0000 012D             {
-; 0000 012E                 case 1: lcd_puts("No Response   "); break;
+; 0000 013A             {
+; 0000 013B                 case 1: lcd_puts("No Response   "); break;
 	CPI  R30,LOW(0x1)
 	LDI  R26,HIGH(0x1)
 	CPC  R31,R26
 	BRNE _0x35
-	__POINTW2MN _0x2C,45
+	__POINTW2MN _0x2C,110
 	RJMP _0x3E
-; 0000 012F                 case 2: lcd_puts("Init timeout  "); break;
+; 0000 013C                 case 2: lcd_puts("Init timeout  "); break;
 _0x35:
 	CPI  R30,LOW(0x2)
 	LDI  R26,HIGH(0x2)
 	CPC  R31,R26
 	BRNE _0x36
-	__POINTW2MN _0x2C,60
+	__POINTW2MN _0x2C,125
 	RJMP _0x3E
-; 0000 0130                 case 3: lcd_puts("Data timeout  "); break;
+; 0000 013D                 case 3: lcd_puts("Data timeout  "); break;
 _0x36:
 	CPI  R30,LOW(0x3)
 	LDI  R26,HIGH(0x3)
 	CPC  R31,R26
 	BRNE _0x37
-	__POINTW2MN _0x2C,75
+	__POINTW2MN _0x2C,140
 	RJMP _0x3E
-; 0000 0131                 case 4: lcd_puts("Read timeout  "); break;
+; 0000 013E                 case 4: lcd_puts("Read timeout  "); break;
 _0x37:
 	CPI  R30,LOW(0x4)
 	LDI  R26,HIGH(0x4)
 	CPC  R31,R26
 	BRNE _0x38
-	__POINTW2MN _0x2C,90
+	__POINTW2MN _0x2C,155
 	RJMP _0x3E
-; 0000 0132                 case 5: lcd_puts("Bit timeout   "); break;
+; 0000 013F                 case 5: lcd_puts("Bit timeout   "); break;
 _0x38:
 	CPI  R30,LOW(0x5)
 	LDI  R26,HIGH(0x5)
 	CPC  R31,R26
 	BRNE _0x39
-	__POINTW2MN _0x2C,105
+	__POINTW2MN _0x2C,170
 	RJMP _0x3E
-; 0000 0133                 case 6: lcd_puts("Checksum error"); break;
+; 0000 0140                 case 6: lcd_puts("Checksum error"); break;
 _0x39:
 	CPI  R30,LOW(0x6)
 	LDI  R26,HIGH(0x6)
 	CPC  R31,R26
 	BRNE _0x3B
-	__POINTW2MN _0x2C,120
+	__POINTW2MN _0x2C,185
 	RJMP _0x3E
-; 0000 0134                 default: lcd_puts("Unknown error "); break;
+; 0000 0141                 default: lcd_puts("Unknown error "); break;
 _0x3B:
-	__POINTW2MN _0x2C,135
+	__POINTW2MN _0x2C,200
 _0x3E:
 	RCALL _lcd_puts
-; 0000 0135 
-; 0000 0136 
-; 0000 0137 
-; 0000 0138             }
-; 0000 0139             lcd_clear();
-	RCALL _lcd_clear
-; 0000 013A         }
-_0x31:
-; 0000 013B 
-; 0000 013C         delay_ms(2000);
+; 0000 0142 
+; 0000 0143 
+; 0000 0144 
+; 0000 0145             }
+; 0000 0146 
+; 0000 0147         }
+; 0000 0148 
+; 0000 0149         delay_ms(2000);
 	LDI  R26,LOW(2000)
 	LDI  R27,HIGH(2000)
 	CALL _delay_ms
-; 0000 013D     }
+; 0000 014A     }
 	RJMP _0x2D
-; 0000 013E }
+; 0000 014B }
 _0x3C:
 	RJMP _0x3C
 ; .FEND
 
 	.DSEG
 _0x2C:
-	.BYTE 0x96
+	.BYTE 0xD7
 	#ifndef __SLEEP_DEFINED__
 	#define __SLEEP_DEFINED__
 	.EQU __se_bit=0x01
