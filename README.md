@@ -47,7 +47,7 @@ This project is a temperature and humidity monitoring system built around the AT
 
 
 <p align="center">
-  <img src="images/dh.jpg" width="600" height="400">
+  <img src="images/dh.jpg" width="500" height="300">
 </p>
 
 ```
