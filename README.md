@@ -44,6 +44,12 @@ This project is a temperature and humidity monitoring system built around the AT
 - Optional: Crystal oscillator (16MHz) and capacitors if not using internal oscillator
 
 ## Wiring Diagram
+
+
+<p align="center">
+  <img src="images/SPI_7.png" width="600" height="400">
+</p>
+
 ```
 LCD Connections (4-bit mode):
   Pin 4 (RS)  → PORTD.4
